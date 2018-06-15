@@ -21,11 +21,12 @@ Before getting started, make sure you have access to an AWS account and have the
 - Simple AWS CLI installation with PIP: `pip install awscli --upgrade --user`
 - Windows installers: [64bit](https://s3.amazonaws.com/aws-cli/AWSCLI64.msi) | [32bit](https://s3.amazonaws.com/aws-cli/AWSCLI32.msi)
 
-Complete guide to installing the CLI: [https://docs.aws.amazon.com/cli/latest/userguide/installing.html](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+*Complete guide to installing the CLI:*
+[https://docs.aws.amazon.com/cli/latest/userguide/installing.html](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
 #### Configure the AWS CLI
 
-- Create a new IAM user with the following permissions ([OPTIONAL: For more details click here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html))
+- Create a new IAM user with the following permissions 
 - Attach the following policies to the IAM user: **AWSIoTFullAccess**.
 - Create a set of credentials and download the credentials. 
 - Run `aws configure --profile proto` to create a new profile called 'proto'.
@@ -39,6 +40,8 @@ Default region name [None]: us-east-1
 Default output format [None]: json
 ```
 
+*[Complete guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) to creating IAM resources:*
+
 ### IoT Development Environment
 
 #### Mongoose Tool Chain
@@ -50,10 +53,15 @@ Default output format [None]: json
        curl -fsSL https://mongoose-os.com/downloads/mos/install.sh | /bin/bash
         ~/.mos/bin/mos --help      
         ```
-- Download SILabs Driver for ESP32: [OPTIONAL: For more details, click here](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
+
+*[Complete guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) to installing Mongoose:*
+
+- Download, unzip and run the SILabs Driver installer for ESP32: 
    - Windows: [Win10 Universal Download](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip), [Win7-10 Download](https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip)
    - Mac: [Download (.zip)](https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip)
-  
+
+*[Complete guide](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers) to installing SILabs drivers.*
+
 Now, let's start the Mongoose development environment in your browser:
 ```
  ~/.mos/bin/mos
