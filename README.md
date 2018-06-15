@@ -2,21 +2,21 @@
 
 Today we will build a completely functional, end-to-end IoT prototype of an asset tracking system using the **ESP32 HiLetGo** development board ([Find it on Amazon](https://www.amazon.com/HiLetgo%C2%AE-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0718T232Z)).
 
-![ESP32 HiLetGo](img/esp32-hiletgo.jpg) 
+![ESP32 HiLetGo](img/esp32-hiletgo.jpg)
 
 . Here are some specs:
 - Hybrid Wifi/Bluetooth Chip. ESP32 can interface with other systems to provide Wi-Fi and Bluetooth functionality through its SPI / SDIO or I2C / UART interfaces.
 - Built-in antenna switches, RF balun, power amplifier, low-noise receive amplifier, filters, and power management.
 - ESP32 achieves ultra-low power consumption with a combination of several types of proprietary software
-- ESP32 is capable of functioning reliably in industrial environments, with an operating temperature ranging from –40°C to +125°C. 
+- ESP32 is capable of functioning reliably in industrial environments, with an operating temperature ranging from –40°C to +125°C.
 
 We will use **AWS** to collect, store and visualize the data from the devices. The map-based dashboard will listen for state changes to the device shadow and update in near real time. Secondly, all transactions will be stored in a blockchain ledger, to provide users a definitive, unalterable history of transactions. This means, they will be able to confirm with certainty the path their shipment took (GPS Sensors), that the shipment was not tampered with (light and motion sensors) and it met environmental requirements (temperature and humidity sensors). The centralized blockchain solution we will use is **Hyperledger Sawtooth on AWS**.
 
-## Pre-requisites 
+## Pre-requisites
 
 ### AWS Environment
 
-Before getting started, make sure you have access to an AWS account and have the AWS CLI installed on your development machine. 
+Before getting started, make sure you have access to an AWS account and have the AWS CLI installed on your development machine.
 
 - Simple AWS CLI installation with PIP: `pip install awscli --upgrade --user`
 - Windows installers: [64bit](https://s3.amazonaws.com/aws-cli/AWSCLI64.msi) | [32bit](https://s3.amazonaws.com/aws-cli/AWSCLI32.msi)
@@ -26,9 +26,9 @@ Before getting started, make sure you have access to an AWS account and have the
 
 #### Configure the AWS CLI
 
-- Create a new IAM user with the following permissions 
+- Create a new IAM user with the following permissions
 - Attach the following policies to the IAM user: **AWSIoTFullAccess**.
-- Create a set of credentials and download the credentials. 
+- Create a set of credentials and download the credentials.
 - Run `aws configure --profile proto` to create a new profile called 'proto'.
 - Put in your credentials and set the region to us-east-1 and the output format to json.
 
@@ -56,7 +56,7 @@ Default output format [None]: json
 
 *[Complete guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) to installing Mongoose:*
 
-- Download, unzip and run the SILabs Driver installer for ESP32: 
+- Download, unzip and run the SILabs Driver installer for ESP32:
    - Windows: [Win10 Universal Download](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip), [Win7-10 Download](https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip)
    - Mac: [Download (.zip)](https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip)
 
@@ -67,6 +67,49 @@ Now, let's start the Mongoose development environment in your browser:
  ~/.mos/bin/mos
 ```
 
-## Device Setup
+This should bring up the following starting screen:
+![](img/startup-site.jpg)
 
-In this section, we will provision the device with certificates to connect to AWS
+## Device Setup & Configuration
+
+In this section, we will flash the operating system, tweak some settings and provision the device with certificates to connect to AWS.
+
+### Flash the Device OS
+
+- Connect to your ESP32 via your micro usb cable.
+- Choose your ESP32 device and click **Select**.
+  ![](img/choose-device.jpg)
+
+- Be sure *esp32* is the selected platform and *demo-js* is the selected app and click **Flash**.
+  ![](img/flash-device.jpg)
+
+- Configure your WiFi settings by entering the WiFi network SSD and password and click **Set**.
+  ![](img/configure-device-wifi.jpg)
+- After applying these settings click **Done**.
+
+### Replace App Files
+- Replace the default device **mos.yml** file from the dropdown menu with the code from **device/mos.yml**.
+    - Click the *Save file, copy to device, reboot device (fast)* button after replacing the default YAML file.
+    ![](img/mos-upload.jpg)
+
+- Replace the default device **init.js** file from the dropdown menu with the code from **device/init.js**.
+    - Click the *Save file, copy to device, reboot device (fast)* button after replacing the default Javascript file.
+    ![](img/init-upload.jpg)
+
+### Connect to AWS
+- Navigate to the left-hand column of the Mongoose OS configuration window and click **Device Config**.
+
+- Leave the *AWS region* box blank or select the region you would prefer and create a permissive policy automatically by typing *mos-default* in the AWS policy box.
+
+- Click **Provision with AWS IoT** to provision this device.
+
+![](img/provision-aws-iot.jpg)
+
+- After this completes click **Save Configuration**.
+
+
+After completing all of these steps, data from the ESP32 device shadow should be displaying in the Device Logs:
+```
+[Jun 15 16:14:19.101] mgos_aws_shadow_ev   Update: {"state": {"reported": {"humidity":null,"temperature":null,"gps":"$GPGGA,005012.798,,,,,0,0,,,M,,M,,*48\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$GPGSV,1,1,00*79\r\n$GPRMC,005012.798,V,,,,,0.00,0.00,060180,
+
+```
