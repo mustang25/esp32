@@ -25,7 +25,7 @@ Complete guide to installing the CLI: [https://docs.aws.amazon.com/cli/latest/us
 
 #### Configure the AWS CLI
 
-- Create a new IAM user with the following permissions ([Full Guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html))
+- Create a new IAM user with the following permissions ([OPTIONAL: For more details click here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html))
 - Attach the following policies to the IAM user: **AWSIoTFullAccess**.
 - Create a set of credentials and download the credentials. 
 - Run `aws configure --profile proto` to create a new profile called 'proto'.
@@ -43,14 +43,14 @@ Default output format [None]: json
 
 #### Mongoose Tool Chain
 
-- Install the Mongoose OS (MOS) toolchain: [Full Guide Here](https://mongoose-os.com/software.html)
+- Install the Mongoose OS (MOS) toolchain: [OPTIONAL: For more details, click here](https://mongoose-os.com/software.html)
     - Windows: [Download (.exe)](https://mongoose-os.com/downloads/mos-release/win/mos.exe)
     - Mac:
         ```
        curl -fsSL https://mongoose-os.com/downloads/mos/install.sh | /bin/bash
         ~/.mos/bin/mos --help      
         ```
-- Download SILabs Driver for ESP32: [Full Guide Here](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
+- Download SILabs Driver for ESP32: [OPTIONAL: For more details, click here](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
    - Windows: [Win10 Universal Download](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip), [Win7-10 Download](https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip)
    - Mac: [Download (.zip)](https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip)
   
