@@ -1,0 +1,107 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <title>INTTRA & AWS Container monitoring and tracking with Greengrass</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  <!-- Mapbox includes -->
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+  <!-- build:css(.) styles/vendor.css -->
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+
+</head>
+<body>
+  <!--[if lt IE 10]>
+  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  <div class="topbar">
+    <div class="aws-logo top">
+      <a href="#" target="_blank">
+        <img src="images/main-logo.png" height="34"/>
+      </a>
+      </div>
+      <div id="searchbox">
+        <div class="input-group margin-bottom-sm">
+          <input id="q" class="form-control searchfield" type="text" placeholder="Find ship or container...">
+          <span class="input-group-addon" id="go"><i class="fa fa-search fa-fw"></i></span>
+        </div>
+      </div>
+      <div class="user-dropdown">
+        <div class="btn-group pull-right">
+          <a class="btn btn-primary fill-aws-orange" href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+          <a class="btn btn-primary fill-aws-orange dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+            <span class="fa fa-caret-down"></span></a>
+            <ul class="dropdown-menu">
+              <li id="edit-address"><a href="#"><i class="fa fa-home fa-fw"></i> Edit Address</a></li>
+              <li id="edit-preferences"><a href="#"><i class="fa fa-cog fa-fw"></i> Edit Preferences</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="saved alert alert-success">
+        <span class="message-title">Success!</span> <span class="message"></span>
+      </div>
+      <div class="failed alert alert-danger">
+        <span class="message-title">Error!</span> <span class="message"></span>
+      </div>
+      <div class="info alert alert-info">
+        <span class="message-title">Info:</span> <span class="message"></span>
+      </div>
+      <div id="loader">
+        <div class="circle-large">
+          <div class="circle-med">
+            <div class="circle-small">
+              <div class='Cube panelLoad'>
+                <div class='cube-face cube-face-front'></div>
+                <div class='cube-face cube-face-back'></div>
+                <div class='cube-face cube-face-left'></div>
+                <div class='cube-face cube-face-right'></div>
+                <div class='cube-face cube-face-bottom'></div>
+                <div class='cube-face cube-face-top'></div>
+              </div>
+              <div id="loadingText">LOADING...</div>
+            </div></div>
+          </div>
+        </div>
+        <div id="data">
+          <span class="title">Ship: Estelle Maersk</span>
+          <div class="container" id="maersk"></div>
+          <div class="container" id="haijun"></div>
+        </div>
+        <div id="map"></div>
+
+        <!-- build:js(.) scripts/vendors.js -->
+        <script src="/bower_components/aws-sdk/dist/aws-sdk.js"></script>
+        <script src="/bower_components/paho-mqtt-js/mqttws31.js"></script>
+        <script src="/bower_components/jquery/dist/jquery.js"></script>
+        <script src="/bower_components/smoothie/smoothie.js"></script>
+        <script src="/bower_components/async/lib/async.js"></script>
+        <script src="/bower_components/cryptojslib/rollups/sha256.js"></script>
+        <script src="/bower_components/cryptojslib/rollups/hmac-sha256.js"></script>
+        <script src="/bower_components/async/lib/async.js"></script>
+        <script src="/bower_components/moment/moment.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js(.) scripts/plugins.js -->
+        <script src="/bower_components/bootstrap/js/dropdown.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js({src/web,.tmp}) scripts/main.js -->
+        <script src="/scripts/awsiot.js"></script>
+        <script src="/scripts/main.js"></script>
+        <!-- endbuild -->
+
+      </body>
+      </html>

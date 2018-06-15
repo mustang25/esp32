@@ -1,0 +1,28 @@
+{
+  "name": "containerd",
+  "private": true,
+  "dependencies": {
+    "bootstrap-sass": "~3.3.5",
+    "components-font-awesome": "^4.7.0",
+    "smoothie": "^1.32.0",
+    "aws-iot-device-sdk": "^1.0.12",
+    "async": "^1.5.2",
+    "paho-mqtt-js": "~1.0.1",
+    "cryptojslib": "~3.1.2",
+    "aws-sdk": "aws-sdk-js#^2.3.19",
+    "moment": "^2.13.0"
+  },
+  "overrides": {
+    "bootstrap-sass": {
+      "main": [
+        "assets/stylesheets/_bootstrap.scss",
+        "assets/fonts/bootstrap/*",
+        "assets/javascripts/bootstrap.js"
+      ]
+    }
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  }
+}
