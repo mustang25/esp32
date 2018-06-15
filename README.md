@@ -108,6 +108,8 @@ In this section, we will flash the operating system, tweak some settings and pro
 - After this completes click **Save Configuration**.
 
 
+### You're Set!
+
 After completing all of these steps, data from the ESP32 device shadow should be displaying in the Device Logs:
 ```
 [Jun 15 16:14:19.101] mgos_aws_shadow_ev   Update: {"state": {"reported": {"humidity":null,"temperature":null,"gps":"$GPGGA,005012.798,,,,,0,0,,,M,,M,,*48\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$GPGSV,1,1,00*79\r\n$GPRMC,005012.798,V,,,,,0.00,0.00,060180,
