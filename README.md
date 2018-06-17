@@ -86,6 +86,15 @@ In this section, we will flash the operating system, tweak some settings and pro
 - Configure your WiFi settings by entering the WiFi network SSD and password and click **Set**.
   ![](img/configure-device-wifi.jpg)
 - After applying these settings click **Done**.
+- You should now see rotating log messages, 'Tick' and 'Tock' in the demo application.
+
+### Wire up your ESP with sensors. 
+
+The example application uses both a GPS module (SIM28) that will return both altitude and geocoordinates and a digital temperature and humidity sensor (DHT22). This is what it should look like once complete:
+
+  ![](img/device.jpg)
+
+Note: If this is your first time using a breadboard, check out [this article](https://learn.adafruit.com/lesson-0-getting-started/breadboard) for some more background.
 
 ### Replace App Files
 - Replace the default device **mos.yml** file from the dropdown menu with the code from **device/mos.yml**.
@@ -115,3 +124,58 @@ After completing all of these steps, data from the ESP32 device shadow should be
 [Jun 15 16:14:19.101] mgos_aws_shadow_ev   Update: {"state": {"reported": {"humidity":null,"temperature":null,"gps":"$GPGGA,005012.798,,,,,0,0,,,M,,M,,*48\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$GPGSV,1,1,00*79\r\n$GPRMC,005012.798,V,,,,,0.00,0.00,060180,
 
 ```
+## Building the Web Application
+
+### Set up Cognito Identity Pool
+
+For the subscribing web application, we will be creating a Cognito Identity Pool to authenticate and authorize the end user to get data from our endpoint.
+
+1. Open the **Amazon Cognito** Console.
+2. Click **Manage Federated Identities**
+![](img/cognito-front.png)
+> **What is Cognito User Pools?**
+> There are two flavours of Cognito. User Pools enables you to create and manage your own directory of users for your application. Federated Identities leverages an external indentity provider like Sign-in with Amazon, Facebook Login, Sign-in with Google, Twitter or any OpenID compatible directory.
+
+3. Click **Create new identity pool**. Name your identity pool and check the box *Enable access to unauthenticated identities*.
+![](img/cognito-create-identity-pool.png)
+4. Click the dropdown for **Authentication Providers**. Note the different options you have here. You could link up a *Cognito User Pool*, or use one of the popular identity providers mentioned. For this bootcamp, we will not need to set this up.
+5. Press **Create Pool**.
+6. Next, it will bring us to a screen where we can setup the IAM roles that will be assumed by both an *Unauthenticated User* and an *Authenticated User*. Look at the policy documents to see how they are structured. Then press **Allow**.
+7. The final step is to give permission to an *Unauthenticated User* to subscribe to our AWS IoT Topic. To do this, click back to the list of AWS Services and open the **AWS Identity & Access Management Console**.
+8. On the left menu, click **Roles**.
+9. You will see all of your roles here. There is one role titled **Cognito_<YOUR_APP_NAME>UnauthRole**. Click on this role.
+10. Under *Inline Policies*, press **Create Role Policy** to create a new inline IAM policy.
+![](img/iam-permissions.png)
+11. Select the box **Custom Policy** and press **Select**.
+![](img/iam-create-new-policy.png)
+12. Name the policy and copy and paste the following JSON text. **Remember to replace <REPLACE_WITH_ACCOUNT_NUMBER> with your actual account number**.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iot:Connect",
+                "iot:Receive"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iot:Subscribe",
+            "Resource": [
+                "arn:aws:iot:<REGION>:<REPLACE_WITH_ACCOUNT_NUMBER>:topicfilter/sbs/*"
+            ]
+        }
+    ]
+}
+```
+
+> **Note:** Replace *<REPLACE_WITH_ACCOUNT_NUMBER>* with your actual account number and *<REGION>* with the region you are using.
+
+13. Press **Apply Policy** and you are done!
+
+**Congratulations! You have successfully created your Cognito Identity Pool**
+
