@@ -42,6 +42,14 @@ Default output format [None]: json
 
 *[Complete guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) to creating IAM resources:*
 
+### Web Development Environment
+
+Node.JS is required to build and run the static website.
+- Windows installer: [.msi](https://nodejs.org/dist/v8.11.3/node-v8.11.3-x86.msi)
+- Mac installer: [.pkg](https://nodejs.org/dist/v8.11.3/node-v8.11.3.pkg) 
+
+*[Complete guide](https://nodejs.org/en/download/) to installing node.js.*
+
 ### IoT Development Environment
 
 #### Mongoose Tool Chain
@@ -179,3 +187,31 @@ For the subscribing web application, we will be creating a Cognito Identity Pool
 
 **Congratulations! You have successfully created your Cognito Identity Pool**
 
+### Run the website locally
+
+For this section, we will be working out of the **frontend** directory. This is where all of the files we need to build out the static web application. First, run this command to change the directory:
+
+```
+cd <path/to/awsome-iot-day/client>
+```
+
+Before we get going, here is a quick intro to a tool called **Gulp**. Gulp is a task manager for Node.js applications. It enables us to wire up commands that will perform common tasks. Here are a few we will use today. Go ahead and try them out!
+
+```
+gulp serve
+```
+> This command will run a local webserver that is listening for any changes to your app directory. If there are an file changes, it will reload the local running web application. This is great for development, as you can see changes live as you update the code.
+```
+gulp build
+```
+> This command will package up all of the files you need for your static site and write them into your **/dist/** folder. This is the folder that serverless is using when it publishes your S3 static files.
+```
+gulp test
+```
+> This command will run the unit tests defined in the **/test/** folder. For this project, we have not defined any unit test.
+
+Awesome. Now you know how to work with Gulp! Next, let's open up **app/scripts/main.js** in Atom and copy and paste your identity pool ID from Cognito. You can get this from the Cognito console.
+
+1. Find the variable **IDENTITY_POOL_ID** and update the variable with your identity pool.
+2. Find the variable **AWS.config.region** and update the variable with your region.
+3. In your command line, run gulp serve.
