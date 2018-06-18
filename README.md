@@ -10,7 +10,9 @@ Today we will build a completely functional, end-to-end IoT prototype of an asse
 - ESP32 achieves ultra-low power consumption with a combination of several types of proprietary software
 - ESP32 is capable of functioning reliably in industrial environments, with an operating temperature ranging from –40°C to +125°C.
 
-We will use **AWS** to collect, store and visualize the data from the devices. The map-based dashboard will listen for state changes to the device shadow and update in near real time. Secondly, all transactions will be stored in a blockchain ledger, to provide users a definitive, unalterable history of transactions. This means, they will be able to confirm with certainty the path their shipment took (GPS Sensors), that the shipment was not tampered with (light and motion sensors) and it met environmental requirements (temperature and humidity sensors). The centralized blockchain solution we will use is **Hyperledger Sawtooth on AWS**.
+We will use **AWS** to collect and store the data from the devices. The map-based dashboard will listen for state changes to the device shadow and update in near real time. 
+
+In the second part, we will demonstrate how you could store transactions in a block chain. In the example provided, every update is stored in a blockchain ledger. This method provides all stakeholders a definitive, unalterable history of transactions. This means, they will be able to confirm with certainty the path their shipment took (GPS Sensors), that the shipment was not tampered with (light and motion sensors) and it met environmental requirements (temperature and humidity sensors). The centralized blockchain solution we will use is **Hyperledger Sawtooth on AWS**.
 
 ## Pre-requisites
 
@@ -19,7 +21,7 @@ We will use **AWS** to collect, store and visualize the data from the devices. T
 Before getting started, make sure you have access to an AWS account and have the AWS CLI installed on your development machine.
 
 - Simple AWS CLI installation with PIP: `pip install awscli --upgrade --user`
-- Windows installers: [64bit](https://s3.amazonaws.com/aws-cli/AWSCLI64.msi) | [32bit](https://s3.amazonaws.com/aws-cli/AWSCLI32.msi)
+- Windows installers: [Download 64bit](https://s3.amazonaws.com/aws-cli/AWSCLI64.msi) | [Download 32bit](https://s3.amazonaws.com/aws-cli/AWSCLI32.msi)
 
 *Complete guide to installing the CLI:*
 [https://docs.aws.amazon.com/cli/latest/userguide/installing.html](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
@@ -45,8 +47,8 @@ Default output format [None]: json
 ### Web Development Environment
 
 Node.JS is required to build and run the static website.
-- Windows installer: [.msi](https://nodejs.org/dist/v8.11.3/node-v8.11.3-x86.msi)
-- Mac installer: [.pkg](https://nodejs.org/dist/v8.11.3/node-v8.11.3.pkg) 
+- Windows installer: [Download .msi](https://nodejs.org/dist/v8.11.3/node-v8.11.3-x86.msi)
+- Mac installer: [Download .pkg](https://nodejs.org/dist/v8.11.3/node-v8.11.3.pkg) 
 
 *[Complete guide](https://nodejs.org/en/download/) to installing node.js.*
 
@@ -132,86 +134,38 @@ After completing all of these steps, data from the ESP32 device shadow should be
 [Jun 15 16:14:19.101] mgos_aws_shadow_ev   Update: {"state": {"reported": {"humidity":null,"temperature":null,"gps":"$GPGGA,005012.798,,,,,0,0,,,M,,M,,*48\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$GPGSV,1,1,00*79\r\n$GPRMC,005012.798,V,,,,,0.00,0.00,060180,
 
 ```
-## Building the Web Application
+## Deploy the Hyperledger Sawtooth Supply Chain example application.
 
-### Set up Cognito Identity Pool
+In this section, we will deploy a hyperledger instance in AWS. 
 
-For the subscribing web application, we will be creating a Cognito Identity Pool to authenticate and authorize the end user to get data from our endpoint.
+1. First, lets launch a new EC2 instance in your default VPC.
+2. When launching the EC2 instance, use the following characteristics:
+    - Select Amazon Linux as the OS.
+    - Enable a public IP address.
+    - Change the EBS root volume storage size to 40 GB.
+    - In the security group, create a custom TCP rule and open ports 8020-8024 to the public.
+3. Connect to the instance over SSH.
+4. Run the following commands:
+    ```
+    sudo yum update -y
+    sudo yum install -y docker git
+    sudo usermod -a -G docker ec2-user
+    sudo curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null
+    sudo chmod +x /usr/local/bin/docker-compose
+    sudo service docker start
+    sudo chkconfig docker on
+    git clone https://github.com/jerwallace/sawtooth-supply-chain.git
+    cd sawtooth-supply-chain
+    sudo `which docker-compose` up&
+    ```
+5. This will take a few minutes. After 5-10 minutes, open the link: http://<YOUR_EC2_DNS_NAME>:8022
 
-1. Open the **Amazon Cognito** Console.
-2. Click **Manage Federated Identities**
-![](img/cognito-front.png)
-> **What is Cognito User Pools?**
-> There are two flavours of Cognito. User Pools enables you to create and manage your own directory of users for your application. Federated Identities leverages an external indentity provider like Sign-in with Amazon, Facebook Login, Sign-in with Google, Twitter or any OpenID compatible directory.
+## Next Steps
 
-3. Click **Create new identity pool**. Name your identity pool and check the box *Enable access to unauthenticated identities*.
-![](img/cognito-create-identity-pool.png)
-4. Click the dropdown for **Authentication Providers**. Note the different options you have here. You could link up a *Cognito User Pool*, or use one of the popular identity providers mentioned. For this bootcamp, we will not need to set this up.
-5. Press **Create Pool**.
-6. Next, it will bring us to a screen where we can setup the IAM roles that will be assumed by both an *Unauthenticated User* and an *Authenticated User*. Look at the policy documents to see how they are structured. Then press **Allow**.
-7. The final step is to give permission to an *Unauthenticated User* to subscribe to our AWS IoT Topic. To do this, click back to the list of AWS Services and open the **AWS Identity & Access Management Console**.
-8. On the left menu, click **Roles**.
-9. You will see all of your roles here. There is one role titled **Cognito_<YOUR_APP_NAME>UnauthRole**. Click on this role.
-10. Under *Inline Policies*, press **Create Role Policy** to create a new inline IAM policy.
-![](img/iam-permissions.png)
-11. Select the box **Custom Policy** and press **Select**.
-![](img/iam-create-new-policy.png)
-12. Name the policy and copy and paste the following JSON text. **Remember to replace <REPLACE_WITH_ACCOUNT_NUMBER> with your actual account number**.
+Now that you have the basics setup for development, here are few things to implement:
+- Create the AWS IoT Rule that performs a blockchain transaction in your sawtooth application with your sensor data.
+- Connect a few other types of sensors and send the data back to AWS.
+- Create an SNS notification based on conditions that exist.
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iot:Connect",
-                "iot:Receive"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "iot:Subscribe",
-            "Resource": [
-                "arn:aws:iot:<REGION>:<REPLACE_WITH_ACCOUNT_NUMBER>:topicfilter/sbs/*"
-            ]
-        }
-    ]
-}
-```
 
-> **Note:** Replace *<REPLACE_WITH_ACCOUNT_NUMBER>* with your actual account number and *<REGION>* with the region you are using.
 
-13. Press **Apply Policy** and you are done!
-
-**Congratulations! You have successfully created your Cognito Identity Pool**
-
-### Run the website locally
-
-For this section, we will be working out of the **frontend** directory. This is where all of the files we need to build out the static web application. First, run this command to change the directory:
-
-```
-cd <path/to/awsome-iot-day/client>
-```
-
-Before we get going, here is a quick intro to a tool called **Gulp**. Gulp is a task manager for Node.js applications. It enables us to wire up commands that will perform common tasks. Here are a few we will use today. Go ahead and try them out!
-
-```
-gulp serve
-```
-> This command will run a local webserver that is listening for any changes to your app directory. If there are an file changes, it will reload the local running web application. This is great for development, as you can see changes live as you update the code.
-```
-gulp build
-```
-> This command will package up all of the files you need for your static site and write them into your **/dist/** folder. This is the folder that serverless is using when it publishes your S3 static files.
-```
-gulp test
-```
-> This command will run the unit tests defined in the **/test/** folder. For this project, we have not defined any unit test.
-
-Awesome. Now you know how to work with Gulp! Next, let's open up **app/scripts/main.js** in Atom and copy and paste your identity pool ID from Cognito. You can get this from the Cognito console.
-
-1. Find the variable **IDENTITY_POOL_ID** and update the variable with your identity pool.
-2. Find the variable **AWS.config.region** and update the variable with your region.
-3. In your command line, run gulp serve.
