@@ -1,4 +1,4 @@
-# AWSome IoT Prototyping Day for INTTRA
+# AWSome IoT Prototyping
 
 Today we will build a completely functional, end-to-end IoT prototype of an asset tracking system using the **ESP32 HiLetGo** development board ([Find it on Amazon](https://www.amazon.com/HiLetgo%C2%AE-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0718T232Z)).
 
